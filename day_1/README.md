@@ -168,14 +168,46 @@ db.createCollection("Log", {
 mongoimport --db some_db --collection some_collection --drop --file some_file.json
 ```
 
-- Let's import the restaurants.json file from here: 
+- Let's import the restaurants.json file from here: https://raw.githubusercontent.com/arun-curriculum/MongoDB-Two-Day/master/sample_data/restaurants.json
+
+```bash
+curl -o restaurants.json https://raw.githubusercontent.com/arun-curriculum/MongoDB-Two-Day/master/sample_data/restaurants.json
+```
+
+## Sub Document Queries and Operators
+
+- In MongoDB you can request information based on conditions in a sub document.
+- The syntax is similar to JavaScript object syntax. Let's take the example of retrieving records based on building number:
+
+```javascript
+db.restaurants.find({
+    "address.building": "1007"
+});
+```
+
+- Operators allow you to use in-built helpers to accomplish filtered queries. Let's take the example with the greater than operator:
+
+```javascript
+db.restaurants.find({
+    "grades.score": {
+        $gt: 30
+    }
+});
+```
+
+## Mongo Lab 2
+
+- Step 1: Write a query that retrieves one document in the restaurants database so you can see the structure of the data.
+- Step 2: Write a query that searches the restaurants database for locations where the borough is "Manhattan".
+- Step 3: Write a query that pulls all restaurants that have received a "B" rating at some point.
+- Step 4: Add to the query in step 4 a sort filter that sorts alphabetically by borough name. You will have to look up the `.sort()` method.
 
 ## Aggregation
 
-- Download the file from here: http://media.mongodb.org/zips.json
+- Download the file from here: https://raw.githubusercontent.com/arun-curriculum/MongoDB-Two-Day/master/sample_data/zips.json
 
 ```bash
-curl -o zips.json http://media.mongodb.org/zips.json
+curl -o zips.json https://raw.githubusercontent.com/arun-curriculum/MongoDB-Two-Day/master/sample_data/zips.json
 ```
 
 - Import the file into MongoDB.
@@ -215,9 +247,17 @@ db.zips.aggregate([
 - Each step in the aggregation pipeline is defined in this object format.
 - Every subsequent step will run in order.
 
-## Mongo Lab 2
+## Mongo Lab 3 Part 1
 
 - In this lab we will try out a variety of aggregation steps to produce different data sets.
 - Step 1: Write a query that will return all states along with their population IF the sum of their population is above 10 million. You will need to look up `$match` and `$gte`.
 - Step 2: Write a query that will return the average population for each city. You will need to look up `$avg`.
 - Step 3: Alter the query above to sort by the average population in descending order.
+
+## Mongo Lab 3 Part 2
+
+- In this lab we will use aggregation but now for the restaurants dataset.
+- Step 1: Start by writing an aggregation query that groups the restaurants by borough.
+- Step 2: Alter your query to $unwind the grades array. You will have to look this up.
+- Step 3: Use the $avg operator to return the average score for restaurants in the various boroughs.
+- Step 4: Add to your query above to restrict the results to only an average score of above 10.

@@ -1,0 +1,27 @@
+Step 1: Start by writing an aggregation query that groups the restaurants by borough.
+
+db.restaurants.aggregate([
+  { $group: { _id: "$borough" } }
+]);
+
+Step 2: Alter your query to $unwind the grades array. You will have to look this up.
+
+db.restaurants.aggregate([
+  { $unwind: "$grades" },
+  { $group: { _id: "$borough" } }
+]);
+
+Step 3: Use the $avg operator to return the average score for restaurants in the various boroughs.
+
+db.restaurants.aggregate([
+  { $unwind: "$grades" },
+  { $group: { _id: "$borough", avgScore: { $avg: "$grades.score" } } }
+]);
+
+Step 4: Add to your query above to restrict the results to only an average score of above 10.
+
+db.restaurants.aggregate([
+  { $unwind: "$grades" },
+  { $group: { _id: "$borough", avgScore: { $avg: "$grades.score" } } },
+  { $match: { avgScore: { $gt: 11 } } }
+]);

@@ -1,0 +1,19 @@
+Step 1: Write a query that will return all states along with their population IF the sum of their population is above 10 million. You will need to look up `$match` and `$gte`.
+
+db.zips.aggregate([
+  { $group: { _id: "$state", totalPop: { $sum: "$pop" } } },
+  { $match: { totalPop: { $gte: 10000000 } } }
+]);
+
+Step 2: Write a query that will return the average population for each city.
+
+db.zips.aggregate([
+    { $group: { _id: "$city", averagePop: { $avg: "$pop" } } }
+]);
+
+Step 3: Alter the query above to sort by the average population in descending order.
+
+db.zips.aggregate([
+    { $group: { _id: "$city", averagePop: { $avg: "$pop" } } },
+    { $sort: { averagePop: -1 } }
+]);
