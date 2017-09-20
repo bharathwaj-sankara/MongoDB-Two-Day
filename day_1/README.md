@@ -9,6 +9,8 @@
 mongod --fork --syslog
 ```
 
+- We will also install a GUI interface for interacting with MongoDB called Robo 3T: https://robomongo.org/download
+
 ## Introduction to MongoDB
 
 - MongoDB is a NoSQL storage solution that is meant to store unstructured, non-relational data.
@@ -61,6 +63,12 @@ var users = [
 mongo
 ```
 
+##### Show all databases
+
+```
+show dbs
+```
+
 ##### Create database
 
 ```
@@ -77,6 +85,12 @@ db.users.insert({
     username: "arsood",
     email: "arsood@gmail.com"
 });
+```
+
+##### Show all collections in a database
+
+```
+show collections
 ```
 
 ##### Find record in collection
@@ -130,3 +144,80 @@ db.users.remove({
 	- Step 3: Try a few different methods to query for the documents.
 	- Step 4: Update a record.
 	- Step 5: Remove a record.
+
+## Capped Collections
+
+- Capped collections are fixed-size collections that are optimized for high-throughput operations.
+- Documents are inserted and retrieved based on insertion order.
+- Once a collection fills its allocated space, it makes room for new documents by overwriting the oldest documents in the collection.
+- Let's take an example of a log with a maximum of 5mb and 5000 documents:
+
+```javascript
+db.createCollection("Log", {
+    capped: true,
+    size: 5242880,
+    max: 5000
+});
+```
+
+## Importing Collections
+
+- Import it into a MongoDB collection:
+
+```bash
+mongoimport --db some_db --collection some_collection --drop --file some_file.json
+```
+
+- Let's import the restaurants.json file from here: 
+
+## Aggregation
+
+- Download the file from here: http://media.mongodb.org/zips.json
+
+```bash
+curl -o zips.json http://media.mongodb.org/zips.json
+```
+
+- Import the file into MongoDB.
+- The imported schema will have this format:
+
+```javascript
+{
+    "_id": "10280",
+    "city": "NEW YORK",
+    "state": "NY",
+    "pop": 5574,
+    "loc": [
+        -74.016323,
+        40.710537
+    ]
+}
+```
+
+- MongoDB's `aggregate()` method processes documents into aggregated results.
+- The aggregation pipeline consists of stages of processing that the documents pass through in order.
+- Let's take an example with the zips data in which we will return grouped states along with the sums of their populations:
+
+```javascript
+db.zips.aggregate([
+    {
+        $group: {
+            _id: "$state",
+            totalPop: {
+                $sum: "$pop"
+            }
+        }
+    }
+]);
+```
+
+- Notice that "totalPop" is not a property of the data set but is something that is created and included in the resulting dataset.
+- Each step in the aggregation pipeline is defined in this object format.
+- Every subsequent step will run in order.
+
+## Mongo Lab 2
+
+- In this lab we will try out a variety of aggregation steps to produce different data sets.
+- Step 1: Write a query that will return all states along with their population IF the sum of their population is above 10 million. You will need to look up `$match` and `$gte`.
+- Step 2: Write a query that will return the average population for each city. You will need to look up `$avg`.
+- Step 3: Alter the query above to sort by the average population in descending order.
