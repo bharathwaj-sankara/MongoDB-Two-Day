@@ -316,10 +316,6 @@ db.restaurants.find({
 ## Basic Querying Section Lab
 
 <details>
-
-<summary>Section Lab Part 1</summary>
-
-<details>
     <summary>Section Lab Question 1</summary>
     Write a MongoDB query to display all the documents in the collection restaurants.
 </details>
@@ -343,12 +339,6 @@ db.restaurants.find({
     <summary>Section Lab Question 5</summary>
     Write a MongoDB query to display all the restaurant which are in the borough Bronx.
 </details>
-
-</details>
-
-<details>
-
-<summary>Section Lab Part 2</summary>
 
 <details>
     <summary>Section Lab Question 6</summary>
@@ -375,12 +365,6 @@ db.restaurants.find({
     Write a MongoDB query to find restaurants which are located in latitude value less than -95.754168.
 </details>
 
-</details>
-
-<details>
-
-<summary>Section Lab Part 3</summary>
-
 <details>
     <summary>Section Lab Question 11</summary>
     Write a MongoDB query to find the restaurants that do not prepare any cuisine of 'American' and their grade score more than 70 and latitude less than -65.754168.
@@ -405,12 +389,6 @@ db.restaurants.find({
     <summary>Section Lab Question 15</summary>
     Write a MongoDB query to find the restaurant Id, name, borough and cuisine for those restaurants which contain 'Reg' as three letters somewhere in its name.
 </details>
-
-</details>
-
-<details>
-
-<summary>Section Lab Part 4</summary>
 
 <details>
     <summary>Section Lab Question 16</summary>
@@ -437,12 +415,6 @@ db.restaurants.find({
     Write a MongoDB query to find the restaurant Id, name, borough and cuisine for those restaurants which prepare dishes except 'American' and 'Chinees' or the restaurant's name begins with letters 'Wil'.
 </details>
 
-</details>
-
-<details>
-
-<summary>Section Lab Part 5</summary>
-
 <details>
     <summary>Section Lab Question 21</summary>
     Write a MongoDB query to find the restaurant Id, name, and grades for those restaurants which achieved a grade of "A" and scored 11 on an ISODate "2014-08-11T00:00:00Z" among many of survey dates.
@@ -467,12 +439,6 @@ db.restaurants.find({
     <summary>Section Lab Question 25</summary>
     Write a MongoDB query to arrange the name of the restaurants in descending order along with all of the columns.
 </details>
-
-</details>
-
-<details>
-
-<summary>Section Lab Part 6</summary>
 
 <details>
     <summary>Section Lab Question 26</summary>
@@ -502,7 +468,6 @@ db.restaurants.find({
 <details>
     <summary>Section Lab Question 31</summary>
     Write a MongoDB query to find the restaurant name, borough, longitude, latitude and cuisine for those restaurants which contain 'Mad' as the first three letters of its name.
-</details>
 </details>
 
 ## Aggregation
