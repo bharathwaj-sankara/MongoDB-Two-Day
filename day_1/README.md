@@ -362,12 +362,12 @@ db.restaurants.find({
 
 <details>
     <summary>Section Lab Question 10</summary>
-    Write a MongoDB query to find restaurants which are located in latitude value less than -95.754168.
+    Write a MongoDB query to find restaurants which are located in longitude value less than -95.754168.
 </details>
 
 <details>
     <summary>Section Lab Question 11</summary>
-    Write a MongoDB query to find the restaurants that do not prepare any cuisine of 'American' and their grade score more than 70 and latitude less than -65.754168.
+    Write a MongoDB query to find the restaurants that do not prepare any cuisine of 'American' and are located at a longitude less than -65.754168.
 </details>
 
 <details>
@@ -412,7 +412,7 @@ db.restaurants.find({
 
 <details>
     <summary>Section Lab Question 20</summary>
-    Write a MongoDB query to find the restaurant Id, name, borough and cuisine for those restaurants which prepare dishes except 'American' and 'Chinees' or the restaurant's name begins with letters 'Wil'.
+    Write a MongoDB query to find the restaurant Id, name, borough and cuisine for those restaurants which prepare dishes except 'American' and 'Chinese' and the restaurant's name begins with letters 'Wil'.
 </details>
 
 <details>
@@ -427,7 +427,7 @@ db.restaurants.find({
 
 <details>
     <summary>Section Lab Question 23</summary>
-    Write a MongoDB query to find the restaurant Id, name, address and geographical location for those restaurants where the 2nd element of the coord array contains a value which is more than 42 and up to 52.
+    Write a MongoDB query to find the restaurant Id, name, and address for those restaurants where the 2nd element of the coord array contains a value which is more than 42 and up to 52.
 </details>
 
 <details>
@@ -447,7 +447,7 @@ db.restaurants.find({
 
 <details>
     <summary>Section Lab Question 27</summary>
-    Write a MongoDB query to check whether all of the addresses contain streets.
+    Write a MongoDB query that returns all addresses that contain streets.
 </details>
 
 <details>
@@ -595,13 +595,3 @@ db.restaurants.find({
     }
 });
 ```
-
-## One-to-Many Relationships
-
-## Mongo Lab 5 Part 1
-
-## Mongo Lab 5 Part 2
-
-## Using GridFS to Store Files
-
-## Mongo Lab 6
