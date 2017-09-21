@@ -285,7 +285,7 @@ db.zips.find({
 });
 ```
 
-## Sub Document Queries and Operators
+## Sub Document Queries
 
 - In MongoDB you can request information based on conditions in a sub document.
 - The syntax is similar to JavaScript object syntax. Let's take the example of retrieving records based on building number:
