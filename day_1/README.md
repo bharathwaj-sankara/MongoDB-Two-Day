@@ -53,6 +53,13 @@ var users = [
 
 - As you can see, some users can have different fields in this model. There is no fixed schema.
 
+## Modeling in JSON - A Blog
+
+- Imagine that we wanted to create a blogging system.
+- This blog will have users, posts, and comments.
+- Users can have many posts and comments.
+- How can we model this with JSON?
+
 ## MongoDB Query Interface
 
 - MongoDB has a rich set of tools that allow us to query collections to add data or find data.
