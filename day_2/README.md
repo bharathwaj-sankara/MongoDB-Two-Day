@@ -3,7 +3,8 @@
 ## Warmup Practice
 
 - Step 1: Create a new database called "mongo_practice".
-- Step 2: Insert the following documents into a "movies" collection using a JSON file that you create:
+- Step 2: Insert the documents below into a "movies" collection using a JSON file that you create.
+- Note: In order to use `mongoimport` with JSON array data you need to pass the `--jsonArray` flag along with the command.
 
 ```
 title : Fight Club
