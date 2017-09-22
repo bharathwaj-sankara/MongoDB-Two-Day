@@ -293,13 +293,16 @@ add_todo.js
 
 ```javascript
 const MongoClient = require("mongodb").MongoClient;
+const ObjectId = require("mongodb").ObjectID;
 
 const url = "mongodb://localhost:27017/todo_db";
+
+conts userId = new ObjectId("59c49d69fab174092c62b2b6");
 
 MongoClient.connect(url, (err, db) => {
   db.collection("todos").insert({
     todo_text: "Mop the floor",
-    user_id: ObjectId("59c49d69fab174092c62b2b6")
+    user_id: userId
   }, (err, savedTodo) => {
     console.log(savedTodo);
     db.close();
