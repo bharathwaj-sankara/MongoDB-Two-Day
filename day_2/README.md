@@ -298,7 +298,7 @@ const ObjectId = require("mongodb").ObjectID;
 
 const url = "mongodb://localhost:27017/todo_db";
 
-conts userId = new ObjectId("59c49d69fab174092c62b2b6");
+const userId = new ObjectId("59c49d69fab174092c62b2b6");
 
 MongoClient.connect(url, (err, db) => {
   db.collection("todos").insert({
