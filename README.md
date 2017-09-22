@@ -11,14 +11,13 @@
 - Basic read queries
 - Operators
 - Sub document queries
-- Aggregation
-- Geospatial queries
 
 ### [Day 2](day_2/)
 
+- Aggregation
+- Geospatial queries
 - GridFS
 - Using MongoDB with Node JS
 - One to many relationships
-- Vertical vs horizontal scaling
 - Replication
 - Sharding
