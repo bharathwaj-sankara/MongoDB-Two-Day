@@ -318,7 +318,7 @@ db.restaurants.find({
 - Step 1: Write a query that retrieves one document in the restaurants database so you can see the structure of the data.
 - Step 2: Write a query that searches the restaurants database for locations where the borough is "Manhattan".
 - Step 3: Write a query that pulls all restaurants that have received a "B" rating at some point.
-- Step 4: Add to the query in step 4 a sort filter that sorts alphabetically by borough name. You will have to look up the `.sort()` method.
+- Step 4: Add to the query in step 3 a sort filter that sorts alphabetically by borough name. You will have to look up the `.sort()` method.
 
 ## Basic Querying Section Lab
 
@@ -354,7 +354,7 @@ db.restaurants.find({
 
 <details>
     <summary>Section Lab Question 7</summary>
-    Write a MongoDB query to display the next 5 restaurants after skipping first 5 which are in the borough Bronx.
+    Write a MongoDB query to display the next 5 restaurants after skipping first 5 which are in the borough Bronx. (Hint: `.skip()`)
 </details>
 
 <details>
@@ -374,7 +374,7 @@ db.restaurants.find({
 
 <details>
     <summary>Section Lab Question 11</summary>
-    Write a MongoDB query to find the restaurants that do not prepare any cuisine of 'American' and are located at a longitude less than -65.754168.
+    Write a MongoDB query to find the restaurants that do not prepare any cuisine of 'American' and are located at a longitude less than -65.754168. (Hint: `$ne`)
 </details>
 
 <details>
@@ -476,129 +476,3 @@ db.restaurants.find({
     <summary>Section Lab Question 31</summary>
     Write a MongoDB query to find the restaurant name, borough, longitude, latitude and cuisine for those restaurants which contain 'Mad' as the first three letters of its name.
 </details>
-
-## Aggregation
-
-- We will use the zips data that we imported before.
-- The imported schema will have this format:
-
-```javascript
-{
-    "_id": "10280",
-    "city": "NEW YORK",
-    "state": "NY",
-    "pop": 5574,
-    "loc": [
-        -74.016323,
-        40.710537
-    ]
-}
-```
-
-- MongoDB's `aggregate()` method processes documents into aggregated results.
-- The aggregation pipeline consists of stages of processing that the documents pass through in order.
-- Let's take an example with the zips data in which we will return grouped states along with the sums of their populations:
-
-```javascript
-db.zips.aggregate([
-    {
-        $group: {
-            _id: "$state",
-            totalPop: {
-                $sum: "$pop"
-            }
-        }
-    }
-]);
-```
-
-- Notice that "totalPop" is not a property of the data set but is something that is created and included in the resulting dataset.
-- Each step in the aggregation pipeline is defined in this object format.
-- Every subsequent step will run in order.
-
-## Mongo Lab 3 Part 1
-
-- In this lab we will try out a variety of aggregation steps to produce different data sets.
-- Step 1: Write a query that will return all states along with their population IF the sum of their population is above 10 million. You will need to look up `$match` and `$gte`.
-- Step 2: Write a query that will return the average population for each city. You will need to look up `$avg`.
-- Step 3: Alter the query above to sort by the average population in descending order.
-
-## Mongo Lab 3 Part 2
-
-- In this lab we will use aggregation but now for the restaurants dataset.
-- Step 1: Start by writing an aggregation query that groups the restaurants by borough.
-- Step 2: Alter your query to $unwind the grades array. You will have to look this up.
-- Step 3: Use the $avg operator to return the average score for restaurants in the various boroughs.
-- Step 4: Add to your query above to restrict the results to only an average score of above 10.
-
-## Geospatial Queries
-
-- One aspect that MongoDB does really well is its implementation of geospatial queries.
-- Operations like finding the records within a certain radius or that intersect with latitude and longitude coordinates can be performed with built-in methods.
-- For this part let's download and import the restaurants sample data set:
-
-```bash
-curl -o restaurants_geo.json https://raw.githubusercontent.com/arun-curriculum/MongoDB-Two-Day/master/sample_data/restaurants_geo.json
-```
-
-- We will also download and import the neighborhoods sample data set:
-
-```bash
-curl -o neigborhoods.json https://raw.githubusercontent.com/arun-curriculum/MongoDB-Two-Day/master/sample_data/neighborhoods.json
-```
-
-- Now we can query for a user's neighborhood. Let's say the user is at 40.82302903 longitude and -73.93414657 latitude. Let's find their neighborhood:
-
-```javascript
-db.neighborhoods.findOne({
-    geometry: {
-        $geoIntersects: {
-            $geometry: {
-                type: "Point",
-                coordinates: [ -73.93414657, 40.82302903 ]
-            }
-        }
-    }
-});
-```
-
-- $geometry is a special field that uses the GeoJSON format. $geoIntersects is specially designed to work with this format.
-- What if we now want to find restaurants in a given neighborhood?
-
-```javascript
-var neighborhood = db.neighborhoods.findOne({
-    geometry: {
-        $geoIntersects: {
-            $geometry: {
-                type: "Point",
-                coordinates: [ -73.93414657, 40.82302903 ]
-            }
-        }
-    }
-});
-
-db.restaurants.find({
-    location: {
-        $geoWithin: {
-            $geometry: neighborhood.geometry
-        }
-    }
-});
-```
-
-- Notice here that we can use JavaScript code in our queries (`var`).
-- This query essentially uses the neighborhood polygon denoted by the various latitude and longitude points to calculate restaurants inside.
-- If we want to use a more traditional spherical format instead we can use $centerSphere:
-
-```javascript
-db.restaurants.find({
-    location: {
-        $geoWithin: {
-            $centerSphere: [
-                [ -73.93414657, 40.82302903 ],
-                5 / 3963.2
-            ]
-        }
-    }
-});
-```

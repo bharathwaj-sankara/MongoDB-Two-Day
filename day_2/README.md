@@ -1,5 +1,199 @@
 # MongoDB Continued
 
+## Warmup Practice
+
+- Step 1: Create a new database called "mongo_practice".
+- Step 2: Insert the following documents into a "movies" collection using a JSON file that you create:
+
+```
+title : Fight Club
+writer : Chuck Palahniuk
+year : 1999
+actors : [
+  Brad Pitt
+  Edward Norton
+]
+```
+```
+title : Pulp Fiction
+writer : Quentin Tarantino
+year : 1994
+actors : [
+  John Travolta
+  Uma Thurman
+]
+```
+```
+title : Inglorious Basterds
+writer : Quentin Tarantino
+year : 2009
+actors : [
+  Brad Pitt
+  Diane Kruger
+  Eli Roth
+]
+```
+```
+title : The Hobbit: An Unexpected Journey
+writer : J.R.R. Tolkein
+year : 2012
+franchise : The Hobbit
+```
+```
+title : The Hobbit: The Desolation of Smaug
+writer : J.R.R. Tolkein
+year : 2013
+franchise : The Hobbit
+```
+```
+title : The Hobbit: The Battle of the Five Armies
+writer : J.R.R. Tolkein
+year : 2012
+franchise : The Hobbit
+synopsis : Bilbo and Company are forced to engage in a war against an array of combatants and keep the Lonely Mountain from falling into the hands of a rising darkness.
+```
+```
+title : Pee Wee Herman's Big Adventure
+```
+```
+title : Avatar
+```
+
+- Step 3: Query the movies collection to:
+
+1. Get all documents
+2. Get all documents with `writer` set to "Quentin Tarantino"
+3. Get all documents where `actors` include "Brad Pitt"
+4. Get all documents with `franchise` set to "The Hobbit"
+5. Get all movies released in the 90s
+6. Get all movies released before the year 2000 or after 2010
+
+## Aggregation
+
+- We will use the zips data that we imported before.
+- The imported schema will have this format:
+
+```javascript
+{
+    "_id": "10280",
+    "city": "NEW YORK",
+    "state": "NY",
+    "pop": 5574,
+    "loc": [
+        -74.016323,
+        40.710537
+    ]
+}
+```
+
+- MongoDB's `aggregate()` method processes documents into aggregated results.
+- The aggregation pipeline consists of stages of processing that the documents pass through in order.
+- Let's take an example with the zips data in which we will return grouped states along with the sums of their populations:
+
+```javascript
+db.zips.aggregate([
+    {
+        $group: {
+            _id: "$state",
+            totalPop: {
+                $sum: "$pop"
+            }
+        }
+    }
+]);
+```
+
+- Notice that "totalPop" is not a property of the data set but is something that is created and included in the resulting dataset.
+- Each step in the aggregation pipeline is defined in this object format.
+- Every subsequent step will run in order.
+
+## Mongo Lab 3 Part 1
+
+- In this lab we will try out a variety of aggregation steps to produce different data sets.
+- Step 1: Write a query that will return all states along with their population IF the sum of their population is above 10 million. You will need to look up `$match` and `$gte`.
+- Step 2: Write a query that will return the average population for each city. You will need to look up `$avg`.
+- Step 3: Alter the query above to sort by the average population in descending order.
+
+## Mongo Lab 3 Part 2
+
+- In this lab we will use aggregation but now for the restaurants dataset.
+- Step 1: Start by writing an aggregation query that groups the restaurants by borough.
+- Step 2: Alter your query to $unwind the grades array. You will have to look this up.
+- Step 3: Use the $avg operator to return the average score for restaurants in the various boroughs.
+- Step 4: Add to your query above to restrict the results to only an average score of above 10.
+
+## Geospatial Queries
+
+- One aspect that MongoDB does really well is its implementation of geospatial queries.
+- Operations like finding the records within a certain radius or that intersect with latitude and longitude coordinates can be performed with built-in methods.
+- For this part let's download and import the restaurants sample data set:
+
+```bash
+curl -o restaurants_geo.json https://raw.githubusercontent.com/arun-curriculum/MongoDB-Two-Day/master/sample_data/restaurants_geo.json
+```
+
+- We will also download and import the neighborhoods sample data set:
+
+```bash
+curl -o neigborhoods.json https://raw.githubusercontent.com/arun-curriculum/MongoDB-Two-Day/master/sample_data/neighborhoods.json
+```
+
+- Now we can query for a user's neighborhood. Let's say the user is at 40.82302903 longitude and -73.93414657 latitude. Let's find their neighborhood:
+
+```javascript
+db.neighborhoods.findOne({
+    geometry: {
+        $geoIntersects: {
+            $geometry: {
+                type: "Point",
+                coordinates: [ -73.93414657, 40.82302903 ]
+            }
+        }
+    }
+});
+```
+
+- $geometry is a special field that uses the GeoJSON format. $geoIntersects is specially designed to work with this format.
+- What if we now want to find restaurants in a given neighborhood?
+
+```javascript
+var neighborhood = db.neighborhoods.findOne({
+    geometry: {
+        $geoIntersects: {
+            $geometry: {
+                type: "Point",
+                coordinates: [ -73.93414657, 40.82302903 ]
+            }
+        }
+    }
+});
+
+db.restaurants.find({
+    location: {
+        $geoWithin: {
+            $geometry: neighborhood.geometry
+        }
+    }
+});
+```
+
+- Notice here that we can use JavaScript code in our queries (`var`).
+- This query essentially uses the neighborhood polygon denoted by the various latitude and longitude points to calculate restaurants inside.
+- If we want to use a more traditional spherical format instead we can use $centerSphere:
+
+```javascript
+db.restaurants.find({
+    location: {
+        $geoWithin: {
+            $centerSphere: [
+                [ -73.93414657, 40.82302903 ],
+                5 / 3963.2
+            ]
+        }
+    }
+});
+```
+
 ## Using GridFS to Store Files
 
 - Normally if you want to save files in the BSON format, there is a 16 MB limit on the filesize.
@@ -49,6 +243,57 @@ mongofiles -d sample_data delete zips.json
 - There are a few different Node packages that give us API methods to interact with MongoDB in a clear and simple way.
 - One of these packages is called Mongoose, and it is essentially a piece of software that gives us data modeling, validation, and querying capabilities beyond the standard MongoDB interface.
 
+#### Install Node JS
+
+- Let's install Node JS: https://nodejs.org/en
+- Make sure the install worked
+
+```bash
+node -v
+npm -v
+```
+
+#### Set Up New Node Project
+
+- We will be working with a new Node project, so let's create a folder called "user_manager" and CD into it.
+- We will then setup the project to use NPM and Mongoose:
+
+```bash
+npm init
+
+npm install mongoose --save
+```
+
+## Mongoose Models
+
+- Mongoose uses models to give us back some control as to the structure of data we are saving to MongoDB.
+- They allow us to define a schema that is adhered to when manipulating data in the database.
+- Let's create the User model in models/user.js
+
+```javascript
+const mongoose = require("mongoose");
+
+mongoose.connect("mongodb://localhost/user_manager");
+
+const User = mongoose.model("User", {
+    firstname: {
+        type: String
+    },
+    lastname: {
+        type: String
+    },
+    username: {
+        type: String
+    },
+    email: {
+        type: String,
+        validate: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    }
+});
+
+module.exports = User;
+```
+
 ## One-to-Many Relationships
 
 ## Mongo Lab 5 Part 1
@@ -57,14 +302,33 @@ mongofiles -d sample_data delete zips.json
 
 ## Mongo Lab 6
 
-## Vertical vs Horizontal Scaling
-
 ## Replication
+
+- On a single server it is common to have one `mongod` process running.
+- However, sometimes you may want to have multiple processes running to provide redundancy and high availability.
+- Replication has the following benefits:
+    - Read capacity is increased since clients can send read operations to different servers.
+    - Maintaining copies of data in different data centers can increase data locality and availability for distributed applications.
+    - You can choose to retain copies for purposes such as disaster recovery, reporting, or backup.
+
+![Replica Set](img/replica_set.svg)
 
 ## Sharding
 
-## Mongo Lab 7
+- Sharding is a method of distributing data across multiple machines.
+- The fundamental reason for using sharding is for deployments with very large datasets and high throughput operations.
+- Addressing system growth is usually thought of from either a vertical or horizontal scaling perspective.
 
-## Mongo Lab 8
+#### Vertical Scaling
 
-## Mongo Lab 9
+- Vertical scaling involves increasing the capacity of the server.
+- Using a more powerful CPU, more RAM, and increasing the storage space are some examples of how this can be done.
+- This leads to a practical maximum ceiling for vertical scaling solutions.
+
+#### Horizontal Scaling
+
+- Horizontal scaling involves distributing the dataset and load over multiple servers, thus spreading out the work.
+- As the system grows, more servers (mongos) can be added to take on the extra load.
+- This architecture is called "sharding", and is performed in the following way:
+
+![Sharded Clusters](img/sharded_clusters.svg)
