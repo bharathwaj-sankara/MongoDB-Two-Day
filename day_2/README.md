@@ -229,7 +229,7 @@ mongofiles -d sample_data put zips.json
 mongofiles -d sample_data get zips.json
 ```
 
-#### Deleteing Files from GridFS
+#### Deleting Files from GridFS
 
 - You can also delete files from GridFS using the `delete` command.
 
@@ -237,11 +237,11 @@ mongofiles -d sample_data get zips.json
 mongofiles -d sample_data delete zips.json
 ```
 
-## Integration with Node JS Using Mongoose
+## Integration with Node JS
 
 - Since MongoDB contains a JavaScript runtime, it is an obvious choice to use it in conjunction with Node JS.
-- There are a few different Node packages that give us API methods to interact with MongoDB in a clear and simple way.
-- One of these packages is called Mongoose, and it is essentially a piece of software that gives us data modeling, validation, and querying capabilities beyond the standard MongoDB interface.
+- If we want Node JS to talk to MongoDB however we need to install a driver that interfaces between the two.
+- We will be using the NPM package "mongodb" to make this happen.
 
 #### Install Node JS
 
@@ -255,52 +255,64 @@ npm -v
 
 #### Set Up New Node Project
 
-- We will be working with a new Node project, so let's create a folder called "user_manager" and CD into it.
-- We will then setup the project to use NPM and Mongoose:
+- We will be working with a new Node project, so let's create a folder called "todo_list" and CD into it.
+- We will then setup the project to use NPM and mongodb:
 
 ```bash
 npm init
 
-npm install mongoose --save
-```
-
-## Mongoose Models
-
-- Mongoose uses models to give us back some control as to the structure of data we are saving to MongoDB.
-- They allow us to define a schema that is adhered to when manipulating data in the database.
-- Let's create the User model in models/user.js
-
-```javascript
-const mongoose = require("mongoose");
-
-mongoose.connect("mongodb://localhost/user_manager");
-
-const User = mongoose.model("User", {
-    firstname: {
-        type: String
-    },
-    lastname: {
-        type: String
-    },
-    username: {
-        type: String
-    },
-    email: {
-        type: String,
-        validate: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    }
-});
-
-module.exports = User;
+npm install mongodb --save
 ```
 
 ## One-to-Many Relationships
 
-## Mongo Lab 5 Part 1
+- MongoDB wasn't designed to be a relational database; however, simple relationships can still exist.
+- In a one-to-many scenario, we can have each todo item contain a user_id field, which will hold the ObjectId of the user who created it.
+- Let's create two files - one to add a new user and one to add a new todo.
+- We will create the functionality of each:
 
-## Mongo Lab 5 Part 2
+add_user.js
 
-## Mongo Lab 6
+```javascript
+const MongoClient = require("mongodb").MongoClient;
+
+const url = "mongodb://localhost:27017/todo_db";
+
+MongoClient.connect(url, (err, db) => {
+  db.collection("users").insert({
+    firstname: "Arun",
+    lastname: "Sood"
+  }, (err, savedUser) => {
+    console.log(savedUser);
+    db.close();
+  });
+});
+```
+
+add_todo.js
+
+```javascript
+const MongoClient = require("mongodb").MongoClient;
+
+const url = "mongodb://localhost:27017/todo_db";
+
+MongoClient.connect(url, (err, db) => {
+  db.collection("todos").insert({
+    todo_text: "Mop the floor",
+    user_id: ObjectId("59c49d69fab174092c62b2b6")
+  }, (err, savedTodo) => {
+    console.log(savedTodo);
+    db.close();
+  });
+});
+```
+
+- Let's try to use similar logic to implement read, update, and destroy operations.
+
+## Pet List Lab
+
+- We will be working on a pet list application to write each of the MongoDB queries necessary to create the functionality.
+- Please refer to the project here: https://github.com/arun-projects/Pet-List-Node-Mongo
 
 ## Replication
 
