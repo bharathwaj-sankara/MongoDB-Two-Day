@@ -316,9 +316,25 @@ db.restaurants.find({
 ## Mongo Lab 2
 
 - Step 1: Write a query that retrieves one document in the restaurants database so you can see the structure of the data.
+```
+db.restaurants.findOne({})
+```
 - Step 2: Write a query that searches the restaurants database for locations where the borough is "Manhattan".
+```
+db.restaurants.find({'borough': 'Manhattan'})
+```
 - Step 3: Write a query that pulls all restaurants that have received a "B" rating at some point.
+```
+db.restaurants.find({'grades': {$elemMatch: {'grade': 'B'}})
+
+// Short cut - not recommended
+db.restaurants.find({'grades.grade': 'B'})
+```
 - Step 4: Add to the query in step 3 a sort filter that sorts alphabetically by borough name. You will have to look up the `.sort()` method.
+
+```
+db.restaurants.find({'grades': {$elemMatch: {'grade': 'B'}}}).sort({'borough': -1})
+```
 
 ## Basic Querying Section Lab
 
