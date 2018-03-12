@@ -465,7 +465,7 @@ db.restaurants.find({$and: [
     {'cuisine': {$ne: 'American'}},
     {'grades': {$elemMatch: {'grade': 'A'}}},
     {'borough': {$ne: 'Brooklyn'}}
-]})
+]}).sort({'cuisine': -1})
 ```
 
 </details>
@@ -540,74 +540,217 @@ db.restaurants.find({$and: [
 <details>
     <summary>Section Lab Question 17</summary>
     Write a MongoDB query to find the restaurant Id, name, borough and cuisine for those restaurants which belong to the borough Staten Island or Queens or Bronx or Brooklyn.
+
+```
+db.restaurants.find({
+    'borough': {$in: ['Staten Island', 'Queens', 'Bronx', 'Brooklyn']}
+}, {
+    _id: 0,
+    restaurant_id: 1,
+    name: 1,
+    borough: 1,
+    cuisine: 1
+})
+```
+
 </details>
 
 <details>
     <summary>Section Lab Question 18</summary>
     Write a MongoDB query to find the restaurant Id, name, borough and cuisine for those restaurants which do not belong to the borough Staten Island or Queens or Bronx or Brooklyn.
+
+```
+db.restaurants.find({
+    'borough': {$nin: ['Staten Island', 'Queens', 'Bronx', 'Brooklyn']}
+}, {
+    _id: 0,
+    restaurant_id: 1,
+    name: 1,
+    borough: 1,
+    cuisine: 1
+})
+```
+
 </details>
 
 <details>
     <summary>Section Lab Question 19</summary>
     Write a MongoDB query to find the restaurant Id, name, borough and cuisine for those restaurants which achieved a score which is not more than 10.
+
+```
+db.restaurants.find({
+    grades: {$elemMatch: {score: {$lt: 10}}}
+}, {
+    _id: 0,
+    restaurant_id: 1,
+    name: 1,
+    borough: 1,
+    cuisine: 1
+})
+```
+
 </details>
 
 <details>
     <summary>Section Lab Question 20</summary>
     Write a MongoDB query to find the restaurant Id, name, borough and cuisine for those restaurants which prepare dishes except 'American' and 'Chinese' and the restaurant's name begins with letters 'Wil'.
+
+```
+db.restaurants.find({
+    $and: [
+        {'cuisine': {$nin: ['American', 'Chinese']}},
+        {name: /^Wil/i}
+    ]
+}, {
+    _id: 0,
+    restaurant_id: 1,
+    name: 1,
+    borough: 1,
+    cuisine: 1
+})
+```
+
 </details>
 
 <details>
     <summary>Section Lab Question 21</summary>
     Write a MongoDB query to find the restaurant Id, name, and grades for those restaurants which achieved a grade of "A" and scored 11 on an ISODate "2014-08-11T00:00:00Z" among many of survey dates.
+
+```
+
+db.restaurants.find(
+        {'grades': {$elemMatch: {'grade': 'A', 'score': 11, 'date': ISODate("2014-08-11T00:00:00Z")}}}
+, {
+    _id: 0,
+    restaurant_id: 1,
+    name: 1,
+    grades: 1
+})
+
+```
+
+This short hand on elemMatch will give wrong results - as it will get a or operations
+
 </details>
 
 <details>
     <summary>Section Lab Question 22</summary>
     Write a MongoDB query to find the restaurant Id, name and grades for those restaurants where the 2nd element of grades array contains a grade of "A" and score 9 on an ISODate "2014-08-11T00:00:00Z".
+
+```
+db.restaurants.find(
+    {   $and: [
+            {'grades.1.grade': "A"},
+            {'grades.1.score': 9},
+            {"grades.1.date" : ISODate("2014-08-11T00:00:00.000Z")}
+        ]}
+, {
+    _id: 0,
+    restaurant_id: 1,
+    name: 1,
+    grades: 1
+})
+```
+
+
 </details>
 
 <details>
     <summary>Section Lab Question 23</summary>
     Write a MongoDB query to find the restaurant Id, name, and address for those restaurants where the 2nd element of the coord array contains a value which is more than 42 and up to 52.
+
+```
+db.restaurants.find(
+            {'address.coord.1': {$gt: 42, $lt: 52}}
+        
+, {
+    _id: 0,
+    restaurant_id: 1,
+    name: 1,
+    address: 1
+})
+```
+
 </details>
 
 <details>
     <summary>Section Lab Question 24</summary>
     Write a MongoDB query to arrange the name of the restaurants in ascending order along with all of the columns.
+
+```
+db.restaurants.find({}).sort({name: 1})
+```
+
 </details>
 
 <details>
     <summary>Section Lab Question 25</summary>
     Write a MongoDB query to arrange the name of the restaurants in descending order along with all of the columns.
+
+```
+db.restaurants.find({}).sort({name: -1})
+```
+
 </details>
 
 <details>
     <summary>Section Lab Question 26</summary>
     Write a MongoDB query to sort the name of the cuisine in ascending order along with the borough in descending order.
+
+```
+db.restaurants.find({}).sort({cuisine: 1, borough: -1})
+```
+
 </details>
 
 <details>
     <summary>Section Lab Question 27</summary>
     Write a MongoDB query that returns all addresses that contain streets.
+
+```
+db.restaurants.find({'address.street': {$exists: true}})
+```
+
 </details>
 
 <details>
     <summary>Section Lab Question 28</summary>
     Write a MongoDB query which will select all documents in the restaurants collection where the coord field value type is "double".
+
+```
+db.restaurants.find({'address.coord': {$elemMatch: {$type: double}}})
+```
+
 </details>
 
 <details>
     <summary>Section Lab Question 29</summary>
     Write a MongoDB query which will select the restaurant Id, name and grades for those restaurants which return 0 as a remainder after dividing the score by 7.
+
+```
+db.restaurants.find({'grades': {$elemMatch: {score: {$mod: [7,0]}}}},
+{restaurant_id: 1, name:1, grades:1})
+```
 </details>
 
 <details>
     <summary>Section Lab Question 30</summary>
     Write a MongoDB query to find the restaurant name, borough, longitude, latitude and cuisine for those restaurants which contain 'mon' as three letters somewhere in its name.
+
+```
+db.restaurants.find({name: /mon/i},
+{name:1, borough:1, "address.coord":1})
+```
+
 </details>
 
 <details>
     <summary>Section Lab Question 31</summary>
     Write a MongoDB query to find the restaurant name, borough, longitude, latitude and cuisine for those restaurants which contain 'Mad' as the first three letters of its name.
+
+```
+db.restaurants.find({name: /^Mad+/i},
+{name:1, borough:1, "address.coord":1})
+```
+
 </details>
