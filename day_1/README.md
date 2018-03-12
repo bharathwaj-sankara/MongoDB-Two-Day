@@ -446,31 +446,95 @@ db.restaurants.find({'address.coord.0': {$lt: -95.754168}})
 <details>
     <summary>Section Lab Question 11</summary>
     Write a MongoDB query to find the restaurants that do not prepare any cuisine of 'American' and are located at a longitude less than -65.754168. (Hint: `$ne`)
+
+```
+db.restaurants.find({$and: [
+        {'address.coord.0': {$lt: -65.754168}},
+        {'cuisine': {$ne: "American"}}
+    ]})
+```
+
 </details>
 
 <details>
     <summary>Section Lab Question 12</summary>
     Write a MongoDB query to find the restaurants which do not prepare any cuisine of 'American' and achieved a grade point 'A' and do not belong to the borough Brooklyn. The document must be displayed according to the cuisine in descending order.
+
+```
+db.restaurants.find({$and: [
+    {'cuisine': {$ne: 'American'}},
+    {'grades': {$elemMatch: {'grade': 'A'}}},
+    {'borough': {$ne: 'Brooklyn'}}
+]})
+```
+
 </details>
 
 <details>
     <summary>Section Lab Question 13</summary>
     Write a MongoDB query to find the restaurant Id, name, borough and cuisine for those restaurants which contain 'Wil' as first three letters for its name.
+
+```
+db.restaurants.find({
+    'name': /^Wil+/
+}, {
+    _id: 0,
+    restaurant_id: 1,
+    name: 1,
+    borough: 1,
+    cuisine: 1
+})
+```
+
 </details>
 
 <details>
     <summary>Section Lab Question 14</summary>
     Write a MongoDB query to find the restaurant Id, name, borough and cuisine for those restaurants which contain 'ces' as last three letters for its name.
+
+```
+db.restaurants.find({
+    'name': /ces$/
+}, {
+    _id: 0,
+    restaurant_id: 1,
+    name: 1,
+    borough: 1,
+    cuisine: 1
+})
+```
+
 </details>
 
 <details>
     <summary>Section Lab Question 15</summary>
     Write a MongoDB query to find the restaurant Id, name, borough and cuisine for those restaurants which contain 'Reg' as three letters somewhere in its name.
+
+```
+db.restaurants.find({
+    'name': /Reg/i
+}, {
+    _id: 0,
+    restaurant_id: 1,
+    name: 1,
+    borough: 1,
+    cuisine: 1
+})
+```
+
 </details>
 
 <details>
     <summary>Section Lab Question 16</summary>
     Write a MongoDB query to find the restaurants which belong to the borough Bronx and prepare either American or Chinese dishes.
+
+```
+db.restaurants.find({$and: [
+    {'borough': 'Bronx'},
+    {'cuisine': {$in: ['American', 'Chinese']}}
+]})  
+```
+
 </details>
 
 <details>
