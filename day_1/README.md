@@ -341,51 +341,106 @@ db.restaurants.find({'grades': {$elemMatch: {'grade': 'B'}}}).sort({'borough': -
 <details>
     <summary>Section Lab Question 1</summary>
     Write a MongoDB query to display all the documents in the collection restaurants.
+	
+```
+db.restaurants.find({})
+
+//or
+
+db.restaurants.find().limit(1)
+```
+	
 </details>
 
 <details>
     <summary>Section Lab Question 2</summary>
     Write a MongoDB query to display the fields restaurant_id, name, borough and cuisine for all the documents in the collection restaurant.
+	
+```
+db.restaurants.find({}, {'_id': 1, 'name': 1, 'borough': 1, 'cuisine': 1})
+```
+	
 </details>
 
 <details>
     <summary>Section Lab Question 3</summary>
     Write a MongoDB query to display the fields restaurant_id, name, borough and cuisine, but exclude the field _id for all the documents in the collection restaurant.
+
+```
+db.restaurants.find({}, {'_id': 0, 'name': 1, 'borough': 1, 'cuisine': 1})
+```
+
+	
 </details>
 
 <details>
     <summary>Section Lab Question 4</summary>
     Write a MongoDB query to display the fields restaurant_id, name, borough and zip code, but exclude the field _id for all the documents in the collection restaurant.
+	
+```
+db.restaurants.find({}, {'_id': 0, 'name': 1, 'borough': 1, 'cuisine': 1, 'address.zipcode': 1})
+```
+	
 </details>
 
 <details>
     <summary>Section Lab Question 5</summary>
     Write a MongoDB query to display all the restaurant which are in the borough Bronx.
+
+```
+db.restaurants.find({borough: 'Bronx'})
+```
 </details>
 
 <details>
     <summary>Section Lab Question 6</summary>
     Write a MongoDB query to display the first 5 restaurant which are in the borough Bronx.
+	
+```
+db.restaurants.find({borough: 'Bronx'}).limit(5)
+```
+	
 </details>
 
 <details>
     <summary>Section Lab Question 7</summary>
     Write a MongoDB query to display the next 5 restaurants after skipping first 5 which are in the borough Bronx. (Hint: `.skip()`)
+	
+```
+db.restaurants.find({'borough': 'Bronx'}).skip(5).limit(5)
+```
+	
 </details>
 
 <details>
     <summary>Section Lab Question 8</summary>
     Write a MongoDB query to find the restaurants who achieved a score more than 90.
+
+```
+db.restaurants.find({'grades': {$elemMatch: {score: {$gt: 90}}}})
+// This just finds restaurants with at least one score gt 90. To match against all the score gt 90 - need to use unwind operator - day 2
+```
+
 </details>
 
 <details>
     <summary>Section Lab Question 9</summary>
     Write a MongoDB query to find the restaurants that achieved a score more than 80 but less than 100.
+	
+```
+db.restaurants.find({'grades': {$elemMatch: {score: {$gt: 80, $lt: 100}}}})
+```	
+
 </details>
 
 <details>
     <summary>Section Lab Question 10</summary>
     Write a MongoDB query to find restaurants which are located in longitude value less than -95.754168.
+
+```
+db.restaurants.find({'address.coord.0': {$lt: -95.754168}})
+```
+
 </details>
 
 <details>
