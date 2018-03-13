@@ -63,11 +63,47 @@ title : Avatar
 - Step 3: Query the movies collection to:
 
 1. Get all documents
+
+```
+db.movies.find({})
+```
+
 2. Get all documents with `writer` set to "Quentin Tarantino"
+
+```
+db.movies.find({'writer': 'Quentin Tarantino'})
+```
+
 3. Get all documents where `actors` include "Brad Pitt"
+
+```
+db.movies.find({
+    actors: {$elemMatch: {$eq: 'Brad Pitt'}} 
+    })
+```
+
 4. Get all documents with `franchise` set to "The Hobbit"
+
+```
+db.movies.find({ franchise: 'The Hobbit'
+    })
+```
+
 5. Get all movies released in the 90s
+
+```
+db.movies.find({ year: {$lt: 2000, $gt: 1990}
+    })
+```
+
 6. Get all movies released before the year 2000 or after 2010
+
+```
+db.movies.find({$or: [
+            {year: {$lt: 2000}}, 
+            {year: {$gt: 2010}}
+            ]})
+```
 
 ## Aggregation
 
