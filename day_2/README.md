@@ -132,9 +132,9 @@ db.zips.aggregate([
     {
         $group: {
             _id: "$state",
-            totalPop: {
-                $sum: "$pop"
-            }
+            totalPop: {  // totalPop is a made up name 
+                $sum: "$pop"  // sum all the pop field
+            }  
         }
     }
 ]);
@@ -148,16 +148,67 @@ db.zips.aggregate([
 
 - In this lab we will try out a variety of aggregation steps to produce different data sets.
 - Step 1: Write a query that will return all states along with their population IF the sum of their population is above 10 million. You will need to look up `$match` and `$gte`.
+
+```
+db.zips.aggregate([
+    {$group: {_id: "$state", totalPop: {$sum: "$pop"}}},
+    {$match: {totalPop: {$gte: 10000000}}}
+])
+```
+
 - Step 2: Write a query that will return the average population for each city. You will need to look up `$avg`.
+
+```
+db.zips.aggregate([
+    {$group: {_id: "$city", avgPop: {$avg: "$pop"}}}
+    ])
+```
+
 - Step 3: Alter the query above to sort by the average population in descending order.
+```
+db.zips.aggregate([
+    {$group: {_id: "$city", avgPop: {$avg: "$pop"}}},
+    { $sort: { _id: 1 }  }
+    ])
+```
 
 ## Mongo Lab 3 Part 2
 
 - In this lab we will use aggregation but now for the restaurants dataset.
 - Step 1: Start by writing an aggregation query that groups the restaurants by borough.
+
+```
+db.restaurants.aggregate([ 
+    {$group: {_id: "$borough"}}
+])
+```
+
 - Step 2: Alter your query to $unwind the grades array. You will have to look this up.
+
+```
+db.restaurants.aggregate([ 
+    {$unwind: "$grades"}
+])
+```
+
 - Step 3: Use the $avg operator to return the average score for restaurants in the various boroughs.
+
+```
+db.restaurants.aggregate([ 
+    {$unwind: "$grades"},
+    {$group: {_id: "$borough", avgScore: {$avg: "$grades.score"}}}
+])
+```
+
 - Step 4: Add to your query above to restrict the results to only an average score of above 10.
+
+```
+db.restaurants.aggregate([ 
+    {$unwind: "$grades"},
+    {$group: {_id: "$borough", avgScore: {$avg: "$grades.score"}}},
+    {$match: {avgScore: {$gte: 10}}}
+])
+```
 
 ## Geospatial Queries
 
